@@ -5,13 +5,6 @@ require File.join(APP_ROOT,"lib","bot")
 
 LIST = ["@androidcentral","#react","#es6","#xperia-xz","#rails5"]
 
-get '/bot.json' do
-	bot = Bot.new
-	LIST = ["@androidcentral","#react","#es6","#xperia-xz","#rails5"]
-	LIST.each {|term| bot.search(term,3) }
-	{ :status=>"Tweets liked!!" }.to_json
-end
-
 get '/' do
 	erb :index
 end
@@ -25,7 +18,14 @@ get '/fav_tweets' do
 end
 
 get '/rt_tweets' do
-
+	# create a bot object
+	bot = Bot.new
+	tweets = []
+	# store the tweets in an array
+	LIST.each {|term| tweets << bot.get_tweets(term,2)}
+	# call the retweet method on all the tweets inside tweets array
+	tweets.each {|tw| bot.retweet(tw)}
+	{:status=>"Done ReTweeting"}.to_json
 end
 
 get '/css/main.css' do
